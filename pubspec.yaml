@@ -1,0 +1,157 @@
+name: dump_shine
+description: Delivery App for Restaurants built on Flutter using Domain-Driven Design (DDD) and Riverpod Framework.
+version: 1.0.11+14
+publish_to: none
+
+environment:
+  sdk: ">=3.1.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.5
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.19.0
+  logging: ^1.2.0
+
+  # StateManagement & DI
+  hooks_riverpod: ^2.0.0
+  riverpod_annotation: ^2.0.0
+  flutter_hooks: ^0.20.3
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.8.1
+
+  # FP
+  fpdart: ^1.0.0-beta.1
+  rxdart: ^0.28.0
+
+  # Connectivity
+  connectivity_plus: ^4.0.1
+
+  # Routing
+  go_router: ^12.1.1
+
+  # Location
+  location: ^5.0.2+1
+  geolocator: ^13.0.2
+
+  # Apis
+  dio: ^5.1.2
+
+  # Firebase
+  # firebase_core: ^2.24.2
+  # cloud_firestore: ^4.14.0
+  # firebase_auth: ^4.16.0
+  # firebase_storage:
+  # firebase_messaging:
+
+  # LocalStorage
+  shared_preferences: ^2.1.1
+  drift: ^2.26.0
+  drift_flutter: ^0.2.4
+  path_provider: ^2.1.5
+  flutter_cache_manager: ^3.4.1
+  image_picker: ^0.8.7+5
+
+  # Images
+  cached_network_image: ^3.4.1
+  lottie: ^2.3.2
+
+  # Utils
+  mocktail: ^0.3.0
+  device_info_plus: ^11.2.0
+  fast_immutable_collections: ^9.1.5
+  flutter_fadein: ^2.0.0
+  uuid: ^4.4.2
+  url_launcher: ^6.1.11
+  flutter_local_notifications: ^18.0.1
+  timeago: ^3.4.0
+
+  # Widgets
+  flutter_platform_widgets: ^6.0.2
+  flutter_adaptive_scaffold: ^0.1.6
+  fluttertoast: ^8.2.2
+  qr_flutter: ^4.1.0
+  material_floating_search_bar:
+    git:
+      url: https://github.com/Railway-Engineering-Solutions/material_floating_search_bar.git
+  flutter_secure_storage: ^9.2.2
+  chopper: ^8.0.3
+  logger: ^2.5.0
+  chopper_generator: ^8.0.3
+  flutter_gen_runner: ^5.8.0
+  dropdown_button2: ^2.3.9
+  permission_handler: ^11.3.1
+  flutter_spinkit: ^5.2.1
+  super_tooltip: ^2.0.9
+  radio_group_v2: ^3.3.0
+  flutter_html: ^3.0.0-beta.2
+  audioplayers: ^6.3.0
+  vibration: ^3.1.3
+  floating: ^6.0.0
+  firebase_crashlytics: ^4.3.4
+  firebase_analytics: ^11.4.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  flutter_native_splash: ^2.3.1
+  import_sorter: ^4.6.0
+  drift_dev: ^2.26.0
+
+  # Lints
+  very_good_analysis: ^5.1.0
+  custom_lint: ^0.6.9
+  riverpod_lint: ^2.3.4
+
+  # Code gen
+  build_runner: ^2.4.14
+  riverpod_generator: ^2.3.10
+  freezed: ^2.4.1
+  json_serializable: ^6.7.0
+  go_router_builder: ^2.3.4
+
+dependency_overrides:
+  analyzer: 6.11.0
+
+import_sorter:
+  comments: false
+
+flutter_gen:
+  output: lib/gen/ # Optional (default: lib/gen/)
+  line_length: 80 # Optional (default: 80)
+
+  # Optional
+  integrations:
+    flutter_svg: true
+
+flutter:
+  generate: true # Enable generation for localizations
+
+  assets:
+    - assets/map_styles/
+    - assets/icons/
+    - assets/icons/dialog_widget_icons/
+    - assets/icons/languages_icons/
+    - assets/icons/screens_icons/
+    - assets/images/core/
+    - assets/images/login/
+    - assets/term/
+    - assets/sounds/
+    - assets/gps/
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+
+  uses-material-design: true

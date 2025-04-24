@@ -1,0 +1,74 @@
+import 'package:flutter/material.dart';
+import 'package:fpdart/src/option.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../auth/domain/user.dart';
+import '../../../auth/presentation/providers/auth_state_provider.dart';
+import '../../../auth/presentation/screens/sign_in_screen/sign_in_screen.dart';
+import '../../../features/home/presentation/screens/home_screen/home_screen.dart';
+import '../screens/no_internet_screen/no_internet_screen.dart';
+import '../screens/route_error_screen/route_error_screen.dart';
+import '../screens/splash_screen/splash_screen.dart';
+import '../utils/fp_framework.dart';
+import '../utils/riverpod_framework.dart';
+import 'navigation_transitions.dart';
+
+part 'app_router.g.dart';
+part 'route_authority.dart';
+part 'routes/auth_routes.dart';
+part 'routes/core_routes.dart';
+part 'routes/home_branch_routes.dart';
+
+// This or other ShellRoutes keys can be used to display a child route on a different Navigator.
+// i.e: use the rootNavigatorKey for a child route inside a ShellRoute
+// which need to take the full screen and ignore that Shell.
+// https://pub.dev/documentation/go_router/latest/go_router/ShellRoute-class.html
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
+@riverpod
+GoRouter goRouter(Ref ref) {
+  final listenable = ValueNotifier<bool?>(null);
+
+  ref.listen(
+    authStateProvider.select((user) => user),
+    (_, isAuthenticated) {
+      print('isAuthenticated');
+      print(isAuthenticated);
+      listenable.value = isAuthenticated.isSome();
+    },
+  );
+
+  final router = GoRouter(
+    debugLogDiagnostics: true,
+    restorationScopeId: 'router',
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: const SplashRoute().location,
+    routes: $appRoutes,
+    redirect: (BuildContext context, GoRouterState state) {
+      final authState =
+          ref.watch(authStateProvider.select((user) => user)).toNullable();
+
+      final isLegitRoute = authState == null;
+
+      if (!isLegitRoute) {
+        return switch (ref.watch(authStateProvider)) {
+          // If the user is authenticated but still on the login page or similar, send to home.
+          Some() => const HomeRoute().location,
+          None() => const SignInRoute().location,
+        };
+      }
+
+      // Return null (no redirecting) if the user is at or heading to a legit route.
+      return null;
+    },
+    refreshListenable: listenable,
+    errorBuilder: (_, state) => RouteErrorScreen(state.error),
+  );
+
+  ref.onDispose(() {
+    listenable.dispose();
+    router.dispose();
+  });
+
+  return router;
+}

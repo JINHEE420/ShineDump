@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1070249987319",
+    "project_id": "dumpshine-travel",
+    "storage_bucket": "dumpshine-travel.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1070249987319:android:947a6afa05b97ffd1c17f2",
+        "android_client_info": {
+          "package_name": "ys.com.shinedump"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7_E1cq-GcDedIqVLNZM4NTalrfsGRsq4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

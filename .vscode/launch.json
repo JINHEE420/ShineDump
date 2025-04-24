@@ -1,0 +1,50 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Dumpshine - Android (VN)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "args": [
+        "--dart-define-from-file=${workspaceFolder}/env/vn.env", 
+        "--flavor=vn"
+      ]
+    },
+    {
+      "name": "Dumpshine - Android (Customer)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "args": [
+        "--dart-define-from-file=${workspaceFolder}/env/ko.env",
+        "--flavor=ko"
+      ]
+    },
+    {
+      "name": "Dumpshine - iOS (VN)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "args": [
+        "--dart-define-from-file=${workspaceFolder}/env/vn.env" // flutter build ipa --dart-define-from-file=env/vn.env
+      ]
+    },
+    {
+      "name": "Dumpshine - iOS (Customer)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "args": [
+        "--dart-define-from-file=${workspaceFolder}/env/ko.env" //flutter run --dart-define-from-file=env/ko.env
+      ]
+    }
+  ]
+}

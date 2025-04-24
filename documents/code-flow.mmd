@@ -1,0 +1,162 @@
+sequenceDiagram
+    actor U as Driver
+    participant M as Mobile App
+    participant LS as Location Service
+    participant LDB as Local Database
+    participant S as Server
+    participant DB as Database
+
+    Note over M,DB: Start Trip
+    U->>M: Select site and cargo
+    U->>M: Start Trip
+    M->>S: POST /api/v1/trips
+    Note right of M: Request:<br/>{<br/> "driver_id": 123,<br/> "material": "토양",<br/> "loading_area_id": 456,<br/> "unloading_area_id": 789,<br/> "project_id": 101<br/>}
+    S->>DB: Insert trip data
+    S-->>M: Trip created
+    M->>LS: Start Location Service
+    M->>M: Enable PiP
+
+    Note over M,DB: Location Tracking Process
+
+    par Location Updates
+        loop Until Trip Ends
+            LS->>M: onLocationUpdate (Mỗi khi location cập nhật vị trí mới)
+            
+            M->>M: Calculate distance from previous point
+            M->>M: Update lastUpdateTime
+            M->>LDB: Store GPS data locally
+            Note right of M: {<br/> tripId: tripId,<br/> lat: location.latitude,<br/> long: location.longitude,<br/> speed: location.speed,<br/> distanceMoving: distance,<br/> timeStamp: "2024-03-20T08:00:05Z"<br/>}
+            
+            M->>M: Update trip distance (via GpsOptimizer)
+            M->>M: Check proximity to destinations
+            
+            opt Enough points collected (min = 10)
+                M->>LDB: get unsynced gps data
+                LDB-->>M: unsynced gps (min 10 records) 
+                M->>S: POST /api/v1/gps (batch sync)
+                Note right of M: Request:<br/>{<br/> "tripId": 123,<br/> "points": [<br/> {lat: 10.7770, lng: 106.7010, speed: 35, timestamp: "..."}, <br/> {lat: 10.7772, lng: 106.7012, speed: 36, timestamp: "..."}<br/> ]<br/>}
+
+                alt Success Response
+                    S->>DB: Save batch of GPS points
+                    S-->>M: Sync successful
+                    M->>LDB: Mark points as synced
+                else Failure Response (Eg,. No internet connect)
+                    S-->>M: Failed
+                    Note over M: Keep points in local DB
+                    Note over M: Will retry with next batch
+                end
+            end
+            
+            opt Near Loading/Unloading Point
+                M->>M: Update destination notification status
+                M->>M: Play notification sound
+                opt If vibrator available
+                    M->>M: Vibrate device
+                end
+                M->>M: Show notification
+            end
+        end
+        
+        loop Every 30 seconds
+            Note over M: Check for location update gaps
+            alt No updates for 30+ seconds
+                M->>M: Log recovery attempt
+                
+                alt No updates for 2+ minutes
+                    M->>M: Request single location update
+                    M->>M: Process forced location update
+                end
+                
+                opt If Android
+                    M->>M: Update notification
+                end
+            end
+        end
+    and Trip Status Sync
+        loop Every 5 seconds
+            Note over M: Timer triggers trip status check
+            M->>S: GET /api/v1/trips/{tripId}
+            S->>DB: Query current trip
+            S-->>M: Trip status response
+            
+            alt Trip Force-Ended or Canceled
+                M->>M: Show notification "Trip has been ended remotely"
+                M->>LS: stopLocationTracking()
+                M->>M: Disable PiP
+                M->>M: Update trip error provider
+                M->>LDB: Perform final GPS sync
+                M->>M: Clear current trip state
+                Note over M: Trip tracking ended by remote action
+            end
+        end
+    end
+
+    Note over M,DB: End Trip Process
+    U->>M: Tap "Unloading" button
+    
+    M->>LS: stopLocationTracking()
+    Note over LS: Cancel position stream subscription
+    Note over LS: Release wake locks
+    Note over LS: Cancel periodic timer
+    M->>M: Stop audio player
+    Note over LS: Background location tracking stops
+    M->>M: Disable PiP
+    
+    M->>S: GET /api/v1/trips/complete/123
+    S->>DB: Update trip status to COMPLETED
+    S-->>M: Trip ended successfully
+    M->>M: Cancel trip synchronization timer
+    
+    opt Final GPS Sync
+        Note over M,S: Location service performs final GPS sync
+        M->>LDB: Get all unsynced GPS data
+        LDB-->>M: Unsynced GPS points
+        M->>S: POST /api/v1/gps (final batch)
+        S->>DB: Save remaining GPS points
+        
+        alt Success
+            S-->>M: Sync successful
+            M->>LDB: Clear trip GPS data
+        else Failure
+            S-->>M: Failure
+            Note over M: Keep points in local DB
+            Note over M: Will retry manually in the Home screen
+        end
+    end
+
+    Note over M,DB: Force End Trip Process
+    U->>M: Tap "Force Trip" button
+
+    M->>M: Show reason selection dialog
+    U->>M: Select reason and confirm
+    
+    M->>LS: stopLocationTracking()
+    Note over LS: Cancel position stream subscription
+    Note over LS: Release wake locks
+    Note over LS: Cancel periodic timer
+    M->>M: Stop audio player
+    Note over LS: Background location tracking stops
+    M->>M: Disable PiP
+
+    M->>S: POST /api/v1/trips/force/123
+    Note right of M: Request:<br/>{<br/> "reason": "other",<br/> "unloading_area_id": 789<br/>}
+    
+    S->>DB: Update trip status to FORCE
+    S-->>M: Force end successful
+    
+    opt Final GPS Sync
+        Note over M,S: Location service performs final GPS sync
+        M->>LDB: Get all unsynced GPS data
+        LDB-->>M: Unsynced GPS points
+        M->>S: POST /api/v1/gps (final batch)
+        S->>DB: Save remaining GPS points
+
+        alt Success
+            S-->>M: Sync successful
+            M->>LDB: Clear trip GPS data
+        else Failure
+            S-->>M: Failure
+            Note over M: Keep points in local DB
+            Note over M: Will retry manually in the Home screen
+        end
+    end

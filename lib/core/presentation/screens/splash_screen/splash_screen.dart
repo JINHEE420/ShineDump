@@ -14,7 +14,9 @@ class SplashScreen extends HookConsumerWidget {
   const SplashScreen({super.key});
 
   static Future<void> precacheAssets(BuildContext context) async {
-    await precacheImage(const AssetImage(MyAssets.ASSETS_IMAGES_CORE_CUSTOM_SPLASH_PNG), context);
+    await precacheImage(
+        const AssetImage(MyAssets.ASSETS_IMAGES_CORE_CUSTOM_SPLASH_PNG),
+        context);
   }
 
   static const setOlderAndroidImmersiveMode = true;

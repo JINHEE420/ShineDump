@@ -94,6 +94,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             BoxShadow(
                               color:
                                   Colors.black.withOpacity(0.1), // shadow color
+                              //color: Colors.black.withValues(alpha: 0.1), 이렇게 수정해도 똑같음.
                               blurRadius: 10, // blur radius
                               spreadRadius: 2, // spread of shadow
                             ),

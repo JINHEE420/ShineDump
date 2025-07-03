@@ -63,64 +63,70 @@ class HistoriesTripWidget extends HookConsumerWidget {
           ),
           height: size.height * .55,
           width: size.width * .8,
-          child: Column(
-            children: [
-              // Title
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                width: double.infinity,
-                alignment: Alignment.center,
-                child: Text(
-                  tr(context).recentOperationHistory,
-                  style: gpsTextStyle(weight: FontWeight.w700, fontSize: 18),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Divider(thickness: .5, color: Colors.grey),
-              ),
-
-              // List of trips
-              Expanded(
-                child: ListView.builder(
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (_, index) => HistoryItem(
-                    title: sortedData.keys.elementAt(index),
-                    count: tr(context)
-                        .tripHistoryCount(sortedData.values.elementAt(index)),
-                  ),
-                  itemCount: sortedData.length,
-                ),
-              ),
-
-              // Confirm button
-              InkWell(
-                onTap: () {
-                  context.pop();
-                },
-                child: Container(
+          child: InteractiveViewer(
+            minScale: 1.0,
+            maxScale: 2.5,
+            panEnabled: true,
+            scaleEnabled: true,
+            child: Column(
+              children: [
+                // Title
+                Container(
+                  margin: const EdgeInsets.only(top: 20),
                   width: double.infinity,
                   alignment: Alignment.center,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                  height: 54,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E386D),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
                   child: Text(
-                    tr(context).confirmButton,
-                    style: gpsTextStyle(
-                      weight: FontWeight.w700,
-                      fontSize: 16,
-                      lineHeight: 19,
-                      color: Colors.white,
+                    tr(context).recentOperationHistory,
+                    style: gpsTextStyle(weight: FontWeight.w700, fontSize: 18),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: Divider(thickness: .5, color: Colors.grey),
+                ),
+
+                // List of trips
+                Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (_, index) => HistoryItem(
+                      title: sortedData.keys.elementAt(index),
+                      count: tr(context)
+                          .tripHistoryCount(sortedData.values.elementAt(index)),
+                    ),
+                    itemCount: sortedData.length,
+                  ),
+                ),
+
+                // Confirm button
+                InkWell(
+                  onTap: () {
+                    context.pop();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 20),
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E386D),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      tr(context).confirmButton,
+                      style: gpsTextStyle(
+                        weight: FontWeight.w700,
+                        fontSize: 16,
+                        lineHeight: 19,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

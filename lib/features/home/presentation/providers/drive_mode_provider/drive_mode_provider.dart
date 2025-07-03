@@ -16,7 +16,7 @@ class DriveModeState extends _$DriveModeState {
   Option<DriveMode> build() {
     // Initialize with a default and load from SharedPreferences later
     _loadSavedMode();
-    return const Some(DriveMode.normal);
+    return const Some(DriveMode.smart);
   }
 
   /// Loads the saved drive mode from SharedPreferences.
@@ -28,7 +28,7 @@ class DriveModeState extends _$DriveModeState {
       try {
         final mode = DriveMode.values.firstWhere(
           (e) => e.name == storedMode,
-          orElse: () => DriveMode.normal,
+          orElse: () => DriveMode.smart,
         );
         state = Some(mode);
       } catch (_) {

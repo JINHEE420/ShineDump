@@ -84,111 +84,117 @@ class _ForceClosePopupState extends ConsumerState<ForceClosePopup> {
 
     final selectedAreaUnLoading =
         ref.watch(areaUnLoadingStateProvider).getOrElse(Area.blank);
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7.5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildTitle(tr(context).forceCloseReason),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
-            child: buildTitle(tr(context).unloadingPlace),
-          ),
-          buildOption(
-            selectedAreaUnLoading.name,
-            callback: () {
-              AppDialog.showDialog(
-                context,
-                SettingAreaUnloadingWidget(
-                  callback: (v) {
-                    ref.read(areaUnLoadingStateProvider.notifier).setArea(v);
-                    AppDialog.closeDialog(context);
-                  },
-                  projectId: project.id,
-                  title: tr(context).selectUnloadingPlace,
-                ),
-                maxHeight: size.height * .5,
-                isShowClose: false,
-              );
-            },
-          ),
-          const SizedBox(height: 10),
-          RadioGroup<String>(
-            controller: myController,
-            values: [
-              tr(context).reasonButtonNotPressed,
-              tr(context).reasonCurrentLocationIsDestination,
-              tr(context).reasonDeviceOrNetworkError,
-              tr(context).reasonOther,
-            ],
-            indexOfDefault: 0,
-            decoration: const RadioGroupDecoration(
-              spacing: 10,
-              labelStyle: TextStyle(
-                color: Colors.black,
-              ),
-              activeColor: Color(0xFF1E386D),
+    return InteractiveViewer(
+      minScale: 1.0,
+      maxScale: 2.5,
+      panEnabled: true,
+      scaleEnabled: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 7.5),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildTitle(tr(context).forceCloseReason),
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+              child: buildTitle(tr(context).unloadingPlace),
             ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
-            child: Row(
-              children: [
-                Expanded(
-                  child: CustomElevatedButton(
-                    buttonColor: Colors.white,
-                    borderColor: Colors.grey,
-                    padding: const EdgeInsets.all(10),
-                    onPressed: () {
+            buildOption(
+              selectedAreaUnLoading.name,
+              callback: () {
+                AppDialog.showDialog(
+                  context,
+                  SettingAreaUnloadingWidget(
+                    callback: (v) {
+                      ref.read(areaUnLoadingStateProvider.notifier).setArea(v);
                       AppDialog.closeDialog(context);
                     },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Assets.icons.icCloseSquare.image(width: 20),
-                        Text(
-                          tr(context).cancelButton,
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                    projectId: project.id,
+                    title: tr(context).selectUnloadingPlace,
                   ),
-                ),
-                const SizedBox(width: 30),
-                Expanded(
-                  child: CustomElevatedButton(
-                    padding: const EdgeInsets.all(10),
-                    onPressed: () => _forceEndTrip(
-                      context: context,
-                      reason: myController.value ?? '',
-                      unloadingAreaId: selectedAreaUnLoading.id,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Assets.icons.icChecked.image(width: 20),
-                        Text(
-                          tr(context).yes,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                  maxHeight: size.height * .5,
+                  isShowClose: false,
+                );
+              },
             ),
-          ),
-          const SizedBox(height: 15),
-        ],
+            const SizedBox(height: 10),
+            RadioGroup<String>(
+              controller: myController,
+              values: [
+                tr(context).reasonButtonNotPressed,
+                tr(context).reasonCurrentLocationIsDestination,
+                tr(context).reasonDeviceOrNetworkError,
+                tr(context).reasonOther,
+              ],
+              indexOfDefault: 0,
+              decoration: const RadioGroupDecoration(
+                spacing: 10,
+                labelStyle: TextStyle(
+                  color: Colors.black,
+                ),
+                activeColor: Color(0xFF1E386D),
+              ),
+            ),
+            const Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CustomElevatedButton(
+                      buttonColor: Colors.white,
+                      borderColor: Colors.grey,
+                      padding: const EdgeInsets.all(10),
+                      onPressed: () {
+                        AppDialog.closeDialog(context);
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Assets.icons.icCloseSquare.image(width: 20),
+                          Text(
+                            tr(context).cancelButton,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 30),
+                  Expanded(
+                    child: CustomElevatedButton(
+                      padding: const EdgeInsets.all(10),
+                      onPressed: () => _forceEndTrip(
+                        context: context,
+                        reason: myController.value ?? '',
+                        unloadingAreaId: selectedAreaUnLoading.id,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Assets.icons.icChecked.image(width: 20),
+                          Text(
+                            tr(context).yes,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+          ],
+        ),
       ),
     );
   }

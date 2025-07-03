@@ -44,6 +44,11 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# 🔐 Keystore and signing config (DO NOT TRACK IN GIT)
+/android/keystore.jks
+/android/keystore.properties
+
+
 # FVM Version Cache
 .fvm/
 

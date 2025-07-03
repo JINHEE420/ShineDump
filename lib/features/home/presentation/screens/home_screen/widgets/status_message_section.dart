@@ -242,7 +242,9 @@ class TripActionButton extends ConsumerWidget {
                     moving: moving,
                     isClosedToUnloading: isClosedToUnloading,
                   ),
-                  text: !moving ? tr(context).drive : tr(context).unload,
+                  text: !moving
+                      ? (canDrive ? tr(context).drive : '대기')
+                      : tr(context).unload,
                 ),
               ),
               Align(

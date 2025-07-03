@@ -63,73 +63,84 @@ class SetupInfoWidget extends HookConsumerWidget {
     final unloadingAreaId = useState(0);
     final settingStep = useState(SetupInfoStep.site);
 
-    return (settingStep.value == SetupInfoStep.site)
-        ? SettingSiteWidget(
-            callback: (v) {
-              siteId.value = v.id;
-              ref.read(siteStateProvider.notifier).setCurrentSite(v);
-              settingStep.value = SetupInfoStep.project;
+    Widget currentStepWidget;
+
+    if (settingStep.value == SetupInfoStep.site) {
+      currentStepWidget = SettingSiteWidget(
+        callback: (v) {
+          siteId.value = v.id;
+          ref.read(siteStateProvider.notifier).setCurrentSite(v);
+          settingStep.value = SetupInfoStep.project;
+        },
+        title: tr(context).selectHeadquarters,
+      );
+    } else if (settingStep.value == SetupInfoStep.project) {
+      currentStepWidget = SettingProjectWidget(
+        siteId: siteId.value,
+        callback: (v) {
+          projectId.value = v.id;
+          ref.read(projectStateProvider.notifier).setCurrentProject(v);
+          settingStep.value = SetupInfoStep.area;
+        },
+        title: tr(context).selectProject,
+        onBack: () {
+          settingStep.value = SetupInfoStep.site;
+        },
+      );
+    } else if (settingStep.value == SetupInfoStep.area) {
+      currentStepWidget = SettingAreaWidget(
+        projectId: projectId.value,
+        callback: (v) {
+          areaId.value = v.id;
+          ref.read(areaLoadingStateProvider.notifier).setArea(v);
+          settingStep.value = SetupInfoStep.unloadingArea;
+        },
+        title: tr(context).selectLoadingPlace,
+        onBack: () {
+          settingStep.value = SetupInfoStep.project;
+        },
+      );
+    } else {
+      currentStepWidget = SettingAreaUnloadingWidget(
+        projectId: projectId.value,
+        title: tr(context).selectUnloadingPlace,
+        onBack: () {
+          settingStep.value = SetupInfoStep.area;
+        },
+        callback: (v) {
+          unloadingAreaId.value = v.id;
+          ref.read(areaUnLoadingStateProvider.notifier).setArea(v);
+          AppDialog.closeDialog(context);
+
+          Future.delayed(
+            const Duration(milliseconds: 500),
+            () {
+              AppDialog.showDialog(
+                context,
+                OverViewWidget(
+                  siteId: siteId.value,
+                  projectId: projectId.value,
+                  loadingAreaId: areaId.value,
+                  unLoadingAreaId: unloadingAreaId.value,
+                  callback: callback,
+                ),
+                maxHeight: MediaQuery.of(context).size.height * .55,
+                isShowClose: false,
+              );
             },
-            title: tr(context).selectHeadquarters,
-          )
-        : (settingStep.value == SetupInfoStep.project
-            ? SettingProjectWidget(
-                siteId: siteId.value,
-                callback: (v) {
-                  projectId.value = v.id;
-                  ref.read(projectStateProvider.notifier).setCurrentProject(v);
-                  settingStep.value = SetupInfoStep.area;
-                },
-                title: tr(context).selectProject,
-                onBack: () {
-                  settingStep.value = SetupInfoStep.site;
-                },
-              )
-            : (settingStep.value == SetupInfoStep.area
-                ? SettingAreaWidget(
-                    projectId: projectId.value,
-                    callback: (v) {
-                      areaId.value = v.id;
-                      ref.read(areaLoadingStateProvider.notifier).setArea(v);
-                      settingStep.value = SetupInfoStep.unloadingArea;
-                    },
-                    title: tr(context).selectLoadingPlace,
-                    onBack: () {
-                      settingStep.value = SetupInfoStep.project;
-                    },
-                  )
-                : SettingAreaUnloadingWidget(
-                    projectId: projectId.value,
-                    // title: '본사 선택',
-                    onBack: () {
-                      settingStep.value = SetupInfoStep.area;
-                    },
-                    title: tr(context).selectUnloadingPlace,
-                    callback: (v) {
-                      unloadingAreaId.value = v.id;
+          );
+        },
+      );
+    }
 
-                      ref.read(areaUnLoadingStateProvider.notifier).setArea(v);
-                      AppDialog.closeDialog(context);
-
-                      Future.delayed(
-                        const Duration(milliseconds: 500),
-                        () {
-                          logger.d('show OverViewWidget: $context');
-                          AppDialog.showDialog(
-                            context,
-                            OverViewWidget(
-                              siteId: siteId.value,
-                              projectId: projectId.value,
-                              loadingAreaId: areaId.value,
-                              unLoadingAreaId: unloadingAreaId.value,
-                              callback: callback,
-                            ),
-                            maxHeight: MediaQuery.of(context).size.height * .55,
-                            isShowClose: false,
-                          );
-                        },
-                      );
-                    },
-                  )));
+    return InteractiveViewer(
+      minScale: 0.8,
+      maxScale: 2.5,
+      panEnabled: true,
+      scaleEnabled: true,
+      child: SingleChildScrollView(
+        child: currentStepWidget,
+      ),
+    );
   }
 }

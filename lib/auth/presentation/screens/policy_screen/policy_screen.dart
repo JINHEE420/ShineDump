@@ -88,132 +88,137 @@ class _PolicyScreenState extends ConsumerState<PolicyScreen> {
 
     return PopScope(
       canPop: false,
-      child: FullScreenScaffold(
-        body: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '회원가입',
-              style: gpsTextStyle(
-                weight: FontWeight.w900,
-                fontSize: 24,
-                color: Colors.black,
+      child: InteractiveViewer(
+        minScale: 0.5,
+        maxScale: 3.0,
+        child: FullScreenScaffold(
+          body: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '회원가입',
+                style: gpsTextStyle(
+                  weight: FontWeight.w900,
+                  fontSize: 24,
+                  color: Colors.black,
+                ),
               ),
+              leading: const SizedBox(),
+              backgroundColor: Colors.white,
             ),
-            leading: const SizedBox(),
-            backgroundColor: Colors.white,
-          ),
-          body: CustomScrollView(
-            slivers: [
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: ColoredBox(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.screenPaddingV16,
-                      horizontal: Sizes.screenPaddingH28,
-                    ),
-                    child: Column(
-                      children: [
-                        Flexible(
-                          child: Image.asset(
-                            MyAssets.ASSETS_IMAGES_CORE_APP_LOGO_PNG,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+            body: CustomScrollView(
+              slivers: [
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: ColoredBox(
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.screenPaddingV16,
+                        horizontal: Sizes.screenPaddingH28,
+                      ),
+                      child: Column(
+                        children: [
+                          Flexible(
+                            child: Image.asset(
+                              MyAssets.ASSETS_IMAGES_CORE_APP_LOGO_PNG,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: Sizes.marginV16,
-                        ),
-                        const Text(
-                          ' 서비스 시작 및 가입을 위해 먼저 \n정보 제공에 동의해주세요.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Color(0xFF8A99AF),
+                          const SizedBox(
+                            height: Sizes.marginV16,
                           ),
-                        ),
-                        Flexible(
-                          flex: 2,
-                          child: Column(
-                            children: [
-                              Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 20),
-                                padding: const EdgeInsets.all(2),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFf8f8f8),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Checkbox(
-                                      value: agressList.value.length ==
-                                          TermType.values.length,
-                                      onChanged: (value) {
-                                        checkAll(value ?? false);
-                                      },
-                                      activeColor: const Color(0xFF1E386D),
-                                    ),
-                                    const Text(
-                                      '약관 전체동의',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Divider(),
-                              ...TermType.values.map(
-                                (type) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                          const Text(
+                            ' 서비스 시작 및 가입을 위해 먼저 \n정보 제공에 동의해주세요.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFF8A99AF),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Column(
+                              children: [
+                                Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFf8f8f8),
+                                    borderRadius: BorderRadius.circular(6),
                                   ),
-                                  child: _TermUse(
-                                    type: type,
-                                    agrList: agressList.value,
-                                    onchange: (v) {
-                                      if (v ?? false) {
-                                        agreeTerm(type);
-                                      } else {
-                                        unAgreeTerm(type);
-                                      }
-                                    },
+                                  child: Row(
+                                    children: [
+                                      Checkbox(
+                                        value: agressList.value.length ==
+                                            TermType.values.length,
+                                        onChanged: (value) {
+                                          checkAll(value ?? false);
+                                        },
+                                        activeColor: const Color(0xFF1E386D),
+                                      ),
+                                      const Text(
+                                        '약관 전체동의',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              const Spacer(),
-                              SizedBox(
-                                width: double.infinity,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: isAll
-                                      ? () {
-                                          saveFirstTime();
-                                          Navigator.of(context).pushReplacement(
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignInScreen(),
-                                            ),
-                                          );
+                                const Divider(),
+                                ...TermType.values.map(
+                                  (type) => Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: _TermUse(
+                                      type: type,
+                                      agrList: agressList.value,
+                                      onchange: (v) {
+                                        if (v ?? false) {
+                                          agreeTerm(type);
+                                        } else {
+                                          unAgreeTerm(type);
                                         }
-                                      : null,
-                                  child: Text(
-                                    '확인',
-                                    style: gpsTextStyle(
-                                      weight: FontWeight.w700,
-                                      fontSize: 18,
+                                      },
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                const Spacer(),
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: ElevatedButton(
+                                    onPressed: isAll
+                                        ? () {
+                                            saveFirstTime();
+                                            Navigator.of(context)
+                                                .pushReplacement(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const SignInScreen(),
+                                              ),
+                                            );
+                                          }
+                                        : null,
+                                    child: Text(
+                                      '확인',
+                                      style: gpsTextStyle(
+                                        weight: FontWeight.w700,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

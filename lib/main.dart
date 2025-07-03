@@ -38,7 +38,7 @@ void main() async {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
   // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  //이 코드는 Flutter 앱에서 Flutter 프레임워크 외부에서 발생하는 비동기 오류를 Firebase Crashlytics로 전송하기 위한 설정입니다
+  // 이 코드는 Flutter 앱에서 Flutter 프레임워크 외부에서 발생하는 비동기 오류를 Firebase Crashlytics로 전송하기 위한 설정입니다
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;

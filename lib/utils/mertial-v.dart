@@ -1,20 +1,21 @@
-enum MaterialV { soil, cancer, waste }
+enum MaterialV { soil, cancer, poorsoil, weatheredrock, waste }
 
 extension MaterialVName on MaterialV {
   String display() {
-    String name = '';
+    var name = '';
     switch (this) {
       case MaterialV.soil:
         name = '토사';
-        break;
       case MaterialV.cancer:
         name = '암';
-        break;
+      case MaterialV.poorsoil:
+        name = '불량토';
+      case MaterialV.weatheredrock:
+        name = '풍화암';
 
       case MaterialV.waste:
       default:
         name = '폐기물';
-        break;
     }
     return name;
   }

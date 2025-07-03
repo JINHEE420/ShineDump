@@ -1,15 +1,15 @@
-import '../../../core/infrastructure/network/network_info.dart';
-import '../../../core/presentation/utils/riverpod_framework.dart';
-import '../../domain/driver.dart';
-import '../../domain/sign_in_with_vehicle_info.dart';
-import '../../domain/user.dart';
-import '../data_sources/auth_local_data_source.dart';
-import '../data_sources/auth_remote_data_source.dart';
+import '../../../core/infrastructure/network/network_info.dart'; // 네트워크 상태 확인
+import '../../../core/presentation/utils/riverpod_framework.dart'; // Riverpod 관련 설정
+import '../../domain/driver.dart'; //Driver 도메인 모델
+import '../../domain/sign_in_with_vehicle_info.dart'; // 차량정보 기반 로그인 요청 모델
+import '../../domain/user.dart'; // 사용자(User) 모델
+import '../data_sources/auth_local_data_source.dart'; // 로컬 데이터 관련 클래스
+import '../data_sources/auth_remote_data_source.dart'; // 서버 통신 관련 클래스
 
-part 'auth_repo.g.dart';
+part 'auth_repo.g.dart'; //@Riverpod를 통해 코드 생성을 할 수 있도록 .g.dart 파일을 포함시킴
 
-/// Provides an instance of [AuthRepo] through Riverpod.
-/// The provider is kept alive throughout the app's lifecycle.
+/// 이 코드는 Riverpod에서 AuthRepo 인스턴스를 제공하는 provider를 선언합니다
+/// keepAlive: true → 앱이 종료되지 않는 이상 상태가 계속 유지됩니다.
 @Riverpod(keepAlive: true)
 AuthRepo authRepo(Ref ref) {
   return AuthRepo(
@@ -80,11 +80,13 @@ class AuthRepo {
   /// Retrieves the cached driver data from local storage.
   ///
   /// Returns the stored [Driver] object or null if no data is cached.
+  /// 로컬 저장소에 저장된 드라이버 데이터를 불러옵니다.
   Driver? getLatestSS() {
     return localDataSource.getDriver();
   }
 
   /// Clears the cached driver data from local storage.
+  /// 로컬 저장소에 있는 드라이버 정보를 삭제합니다.
   Future<void> clearSS() async {
     return localDataSource.clearDriver();
   }

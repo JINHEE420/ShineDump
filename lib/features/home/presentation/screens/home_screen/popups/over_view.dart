@@ -75,162 +75,166 @@ class OverViewWidget extends HookConsumerWidget {
 
     final selectedAreaUnLoading =
         ref.watch(areaUnLoadingStateProvider).getOrElse(Area.blank);
-    return Container(
-      constraints: BoxConstraints(
-        minHeight: size.height * .3,
-        minWidth: size.width * .7,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildTitle(tr(context).loadingPlace),
-                  buildOption(
-                    selectedAreaLoading.name,
-                    callback: () {
-                      AppDialog.showDialog(
-                        context,
-                        SettingAreaWidget(
-                          callback: (v) {
-                            ref
-                                .read(areaLoadingStateProvider.notifier)
-                                .setArea(v);
-                            AppDialog.closeDialog(context);
-                          },
-                          projectId: projectId,
-                          title: tr(context).selectLoadingPlace,
-                        ),
-                        maxHeight: size.height * .5,
-                        isShowClose: false,
-                      );
-                    },
-                  ),
-                  buildTitle(tr(context).unloadingPlace),
-                  buildOption(
-                    selectedAreaUnLoading.name,
-                    callback: () {
-                      AppDialog.showDialog(
-                        context,
-                        SettingAreaUnloadingWidget(
-                          callback: (v) {
-                            ref
-                                .read(areaUnLoadingStateProvider.notifier)
-                                .setArea(v);
-                            AppDialog.closeDialog(context);
-                          },
-                          projectId: projectId,
-                          title: tr(context).selectUnloadingPlace,
-                        ),
-                        maxHeight: size.height * .5,
-                        isShowClose: false,
-                      );
-                    },
-                  ),
-                  buildTitle(tr(context).cargo),
-                  GpsDropDown(
-                    items: MaterialV.values,
-                    displayStringForOption: (e) => e?.display() ?? '',
-                    textPadding: const EdgeInsets.all(10),
-                    value: selectedMaterial,
-                    onChanged: (value) {
-                      if (value != null) {
-                        selectedMaterial = value;
-                      }
-                    },
-                  ),
-                ],
+    return InteractiveViewer(
+      minScale: 1,
+      child: Container(
+        constraints: BoxConstraints(
+          minHeight: size.height * .3,
+          minWidth: size.width * .7,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildTitle(tr(context).loadingPlace),
+                    buildOption(
+                      selectedAreaLoading.name,
+                      callback: () {
+                        AppDialog.showDialog(
+                          context,
+                          SettingAreaWidget(
+                            callback: (v) {
+                              ref
+                                  .read(areaLoadingStateProvider.notifier)
+                                  .setArea(v);
+                              AppDialog.closeDialog(context);
+                            },
+                            projectId: projectId,
+                            title: tr(context).selectLoadingPlace,
+                          ),
+                          maxHeight: size.height * .5,
+                          isShowClose: false,
+                        );
+                      },
+                    ),
+                    buildTitle(tr(context).unloadingPlace),
+                    buildOption(
+                      selectedAreaUnLoading.name,
+                      callback: () {
+                        AppDialog.showDialog(
+                          context,
+                          SettingAreaUnloadingWidget(
+                            callback: (v) {
+                              ref
+                                  .read(areaUnLoadingStateProvider.notifier)
+                                  .setArea(v);
+                              AppDialog.closeDialog(context);
+                            },
+                            projectId: projectId,
+                            title: tr(context).selectUnloadingPlace,
+                          ),
+                          maxHeight: size.height * .5,
+                          isShowClose: false,
+                        );
+                      },
+                    ),
+                    buildTitle(tr(context).cargo),
+                    GpsDropDown(
+                      items: MaterialV.values,
+                      displayStringForOption: (e) => e?.display() ?? '',
+                      textPadding: const EdgeInsets.all(10),
+                      value: selectedMaterial,
+                      onChanged: (value) {
+                        if (value != null) {
+                          selectedMaterial = value;
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              Expanded(
-                child: CustomElevatedButton(
-                  buttonColor: Colors.white,
-                  borderColor: Colors.grey,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ),
-                  onPressed: () {
-                    AppDialog.closeDialog(context);
-                    final moving = ref.watch(
-                      tripManagerProvider
-                          .select((s) => s.toNullable()?.trip != null),
-                    );
-                    if (moving) {
-                      return;
-                    }
-                    ref.read(tripManagerProvider.notifier).clearCurrentTrip();
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Assets.icons.icCloseSquare.image(width: 20),
-                      Text(
-                        tr(context).cancelButton,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 30),
-              Expanded(
-                child: CustomElevatedButton(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 15,
-                    horizontal: 15,
-                  ),
-                  onPressed: () async {
-                    AppDialog.closeDialog(context);
-                    final tripProvider = ref.read(tripManagerProvider.notifier);
-                    if (tripProvider.trip != null) {
-                      await tripProvider.updateTrip(
-                        site.id,
-                        project.id,
-                        selectedAreaLoading.id,
-                        selectedAreaUnLoading.id,
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: CustomElevatedButton(
+                    buttonColor: Colors.white,
+                    borderColor: Colors.grey,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 15,
+                    ),
+                    onPressed: () {
+                      AppDialog.closeDialog(context);
+                      final moving = ref.watch(
+                        tripManagerProvider
+                            .select((s) => s.toNullable()?.trip != null),
                       );
-                    }
-
-                    if (callback != null) {
-                      callback?.call();
-                    }
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Assets.icons.icChecked.image(width: 20),
-                      Text(
-                        tr(context).confirmButton,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                      if (moving) {
+                        return;
+                      }
+                      ref.read(tripManagerProvider.notifier).clearCurrentTrip();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Assets.icons.icCloseSquare.image(width: 20),
+                        Text(
+                          tr(context).cancelButton,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 5),
-        ],
+                const SizedBox(width: 30),
+                Expanded(
+                  child: CustomElevatedButton(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 15,
+                      horizontal: 15,
+                    ),
+                    onPressed: () async {
+                      AppDialog.closeDialog(context);
+                      final tripProvider =
+                          ref.read(tripManagerProvider.notifier);
+                      if (tripProvider.trip != null) {
+                        await tripProvider.updateTrip(
+                          site.id,
+                          project.id,
+                          selectedAreaLoading.id,
+                          selectedAreaUnLoading.id,
+                        );
+                      }
+
+                      if (callback != null) {
+                        callback?.call();
+                      }
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Assets.icons.icChecked.image(width: 20),
+                        Text(
+                          tr(context).confirmButton,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 5),
+          ],
+        ),
       ),
     );
   }

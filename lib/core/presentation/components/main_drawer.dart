@@ -82,7 +82,8 @@ class DrawerItem extends StatelessWidget {
       ),
       title: Text(
         title,
-        style: TextStyles.f18(context).copyWith(fontWeight: FontStyles.fontWeightMedium),
+        style: TextStyles.f18(context)
+            .copyWith(fontWeight: FontStyles.fontWeightMedium),
       ),
       onTap: onTap,
       horizontalTitleGap: 0,

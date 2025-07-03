@@ -132,26 +132,29 @@ class _HomeScreenCompactState extends ConsumerState<HomeScreenCompact> {
       child: NestedScreenScaffold(
         body: Scaffold(
           appBar: HomeAppBar(ref: ref),
-          body: Column(
-            children: [
-              const SizedBox(height: 20),
-              // Use the already extracted ActionPanelsSection
-              ActionPanelsSection(ref: ref), // 현장 및 화물 선택, 최근 운행 내역
-              const SizedBox(height: Sizes.marginH28),
-              // Extract status message section
-              const StatusMessageSection(), // 상태메세지 부분,(운행, 기본모드 등등)
-              // Extract force close button
-              if (moving) const ForceCloseButton(),
+          body: InteractiveViewer(
+            minScale: 0.5,
+            maxScale: 3.0,
+            child: Column(
+              children: [
+                const SizedBox(height: 10),
+                // Show toggle button for switching mode
+                //const SizedBox(height: 16),
+                const DriveModePanel(), // 운행 모드
+                // Use the already extracted ActionPanelsSection
+                ActionPanelsSection(ref: ref), // 현장 및 화물 선택, 최근 운행 내역
+                const SizedBox(height: Sizes.marginH16),
+                // Extract status message section
+                const StatusMessageSection(), // 상태메세지 부분
+                // Extract force close button
+                if (moving) const ForceCloseButton(),
 
-              if (!moving) ...[
-                const SizedBox(height: 20),
-                const UnsyncedDataBanner(), // 인터넷 안되도 서버로 넣을수 있게 하는 부분.
+                if (!moving) ...[
+                  const SizedBox(height: 20),
+                  const UnsyncedDataBanner(), // 인터넷 안되도 서버로 넣을수 있게 하는 부분.
+                ],
               ],
-
-              // Show toggle button for switching mode
-              const SizedBox(height: 16),
-              const DriveModePanel(), // 운행 모드
-            ],
+            ),
           ),
         ),
       ),

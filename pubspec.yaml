@@ -1,6 +1,6 @@
 name: dump_shine
 description: Delivery App for Restaurants built on Flutter using Domain-Driven Design (DDD) and Riverpod Framework.
-version: 1.0.11+14
+version: 1.0.16+24
 publish_to: none
 
 environment:
